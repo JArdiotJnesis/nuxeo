@@ -244,6 +244,7 @@ public class MongoDBRepository extends DBSRepositoryBase {
         } else {
             supportsDenormalizedBlobKeys = doc.getBoolean(SETTING_VALUE, false);
         }
+        capabilities.put(CAPABILITY_QUERY_BLOB_KEYS, supportsDenormalizedBlobKeys);
     }
 
     @Override
