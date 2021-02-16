@@ -645,7 +645,7 @@ public class ComponentManagerImpl implements ComponentManager {
      */
     protected List<RegistrationInfo> activateComponents() {
         log.info("Instantiate components");
-        Watch iwatch = new Watch("Instantiate components");
+        Watch iwatch = new Watch("Instantiate components", "org.nuxeo.watch.instantiateComponents");
         iwatch.start();
 
         // first instantiate resolved components: that allows some to register as listeners on ComponentManager before
@@ -666,11 +666,11 @@ public class ComponentManagerImpl implements ComponentManager {
         }
         iwatch.stop();
         log.debug("Components instantiated in {}s", iwatch.total::formatSeconds);
-        iwatch.log(TimeUnit.MILLISECONDS);
+        iwatch.log();
         writeDevMetrics(iwatch, "instantiate");
 
         log.info("Activate components");
-        Watch awatch = new Watch("Activate components");
+        Watch awatch = new Watch("Activate components", "org.nuxeo.watch.activateComponents");
         awatch.start();
         listeners.beforeActivation();
         // make sure we start with a clean pending registry
@@ -687,7 +687,7 @@ public class ComponentManagerImpl implements ComponentManager {
         awatch.stop();
 
         log.debug("Components activated in {}s", awatch.total::formatSeconds);
-        awatch.log(TimeUnit.MILLISECONDS);
+        awatch.log();
         writeDevMetrics(awatch, "activate");
 
         return ris;
@@ -792,7 +792,7 @@ public class ComponentManagerImpl implements ComponentManager {
      */
     protected void deactivateComponents(boolean isShutdown) {
         log.info("Deactivate components");
-        Watch watch = new Watch("Deactivate components");
+        Watch watch = new Watch("Deactivate components", "org.nuxeo.deactivateComponents");
         watch.start();
         listeners.beforeDeactivation();
         Collection<RegistrationInfo> resolved = registry.getResolvedRegistrationInfo();
@@ -812,7 +812,7 @@ public class ComponentManagerImpl implements ComponentManager {
         watch.stop();
 
         log.debug("Components deactivated in {}s", watch.total::formatSeconds);
-        watch.log(TimeUnit.MILLISECONDS);
+        watch.log();
         writeDevMetrics(watch, "deactivate");
     }
 
@@ -874,7 +874,7 @@ public class ComponentManagerImpl implements ComponentManager {
      */
     protected void startComponents(List<RegistrationInfo> ris, boolean isResume) {
         log.info("Start components (isResume={})", isResume);
-        Watch watch = new Watch("Start components");
+        Watch watch = new Watch("Start components", "org.nuxeo.watch.startComponents");
         watch.start();
         listeners.beforeStart(isResume);
         for (RegistrationInfo ri : ris) {
@@ -887,7 +887,7 @@ public class ComponentManagerImpl implements ComponentManager {
         watch.stop();
 
         log.debug("Components started in {}s", watch.total::formatSeconds);
-        watch.log(TimeUnit.MILLISECONDS, 0, 100);
+        watch.log();
         writeDevMetrics(watch, "start");
 
     }
@@ -927,7 +927,7 @@ public class ComponentManagerImpl implements ComponentManager {
     protected void stopComponents(boolean isStandby) {
         log.info("Stop components (isStandby={})", isStandby);
         try {
-            Watch watch = new Watch("Stop components");
+            Watch watch = new Watch("Stop components", "org.nuxeo.watch.stopComponents");
             watch.start();
             listeners.beforeStop(isStandby);
             List<RegistrationInfo> list = this.started;
@@ -943,7 +943,7 @@ public class ComponentManagerImpl implements ComponentManager {
             watch.stop();
 
             log.debug("Components stopped in {}s", watch.total::formatSeconds);
-            watch.log(TimeUnit.MILLISECONDS);
+            watch.log();
             writeDevMetrics(watch, "stop");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
